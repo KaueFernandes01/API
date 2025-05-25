@@ -1,17 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const UsuarioController = require('../controllers/usuarioController');
+const autenticarUsuario = require('../middlewares/autenticarUsuario');
 
-// Rota para criar um novo usuário
 router.post('/', UsuarioController.criarUsuario);
 
-// Rota para buscar um usuário por ID
-router.get('/:id', UsuarioController.buscarUsuarioPorId);
+router.get('/', autenticarUsuario, UsuarioController.buscarUsuarios);
 
-// Rota para atualizar um usuário por ID
-router.put('/:id', UsuarioController.atualizarUsuario);
 
-// Rota para deletar um usuário por ID
-router.delete('/:id', UsuarioController.deletarUsuario);
+router.put('/:id', autenticarUsuario, UsuarioController.atualizarUsuario);
+
+
+router.delete('/:id', autenticarUsuario, UsuarioController.deletarUsuario);
 
 module.exports = router;
+

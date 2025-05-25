@@ -1,14 +1,19 @@
 const express = require('express');
 const app = express();
+
 const usuarioRoutes = require('./routes/usuarios');
+const loginRoute = require('./routes/login');
+const autenticarToken = require('./middlewares/autenticarUsuario');
 
-app.use(express.json()); // Para ler JSON do body
+app.use(express.json());
 
-// Rotas
-app.use('/usuarios', usuarioRoutes);
+app.use('/login', loginRoute);
 
-// Iniciar o servidor
+// Aplica o middleware a todas as rotas de usuário
+app.use('/usuarios', autenticarToken, usuarioRoutes);
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
+
