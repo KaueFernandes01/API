@@ -1,25 +1,31 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+const db = require('../config/db'); 
+const chaveSecreta = '3985143D';
 
-const chaveSecreta = 'sua_chave_secreta';
 
-// Rota POST /login que recebe login e senha, e retorna um token JWT
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const { login, senha } = req.body;
 
-  // Aqui você faria a validação no banco, mas pra teste vamos simular:
-  if (login === 'admin' && senha === '1234') {
-    // Criar payload com dados do usuário
-    const usuario = { id: 1, login: 'admin' };
+  try {
+    
+    const [resultado] = await db.query('SELECT * FROM usuarios WHERE login = ? AND senha = ?', [login, senha]);
 
-    // Gerar token (expira em 1h)
-    const token = jwt.sign(usuario, chaveSecreta, { expiresIn: '1h' });
+    if (resultado.length === 0) {
+      return res.status(401).json({ erro: 'Login ou senha inválidos' });
+    }
 
-    return res.json({ token });
+    const usuario = resultado[0];
+
+    
+    const token = jwt.sign({ id: usuario.id, login: usuario.login }, chaveSecreta, { expiresIn: '1h' });
+
+    res.json({ token });
+  } catch (erro) {
+    console.error('Erro ao fazer login:', erro);
+    res.status(500).json({ erro: 'Erro interno no servidor' });
   }
-
-  res.status(401).json({ erro: 'Login ou senha inválidos' });
 });
 
 module.exports = router;

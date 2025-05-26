@@ -1,33 +1,37 @@
-const LogMotor = require('../models/LogMotor');
+const Motor = require('../models/LogMotor');
+const Log = require('../models/LogUsuarios');
 
-const ligarMotor = async (req, res) => {
+const registrarMotor = async (req, res) => {
   try {
-    const usuarioId = req.usuario?.id || 3; // ou req.body.usuarioId
+    const { velocidade, status } = req.body;
+    const usuario_id = req.usuario?.id;
 
-    await LogMotor.registrar(usuarioId, 'Ligou o motor', 'Usuário ligou o motor.');
+    if (!usuario_id) {
+      return res.status(401).json({ erro: 'Usuário não autenticado' });
+    }
 
-    res.json({ mensagem: 'Motor ligado com sucesso!' });
+    await Motor.registrarAcao(usuario_id, velocidade, status);
+
+    await Log.registrarOuIgnorar(usuario_id, 'Controle do motor', `Usuário alterou o motor para status: ${status} com velocidade: ${velocidade}`);
+
+    res.status(201).json({ mensagem: 'Ação no motor registrada com sucesso!' });
   } catch (error) {
-    console.error('Erro ao ligar motor:', error);
-    res.status(500).json({ erro: 'Erro ao ligar motor.' });
+    console.error('Erro ao registrar ação no motor:', error);
+    res.status(500).json({ erro: 'Erro ao registrar ação no motor' });
   }
 };
 
-const ajustarVelocidade = async (req, res) => {
+const listarLogsMotor = async (req, res) => {
   try {
-    const { velocidade } = req.body;
-    const usuarioId = req.usuario?.id || 3;
-
-    await LogMotor.registrar(usuarioId, 'Ajustou velocidade', `Velocidade definida para ${velocidade}`);
-
-    res.json({ mensagem: 'Velocidade ajustada com sucesso!' });
+    const dados = await Motor.buscarTodos();
+    res.json(dados);
   } catch (error) {
-    console.error('Erro ao ajustar velocidade:', error);
-    res.status(500).json({ erro: 'Erro ao ajustar velocidade.' });
+    console.error('Erro ao buscar logs do motor:', error);
+    res.status(500).json({ erro: 'Erro ao buscar logs do motor' });
   }
 };
 
 module.exports = {
-  ligarMotor,
-  ajustarVelocidade
+  registrarMotor,
+  listarLogsMotor
 };
