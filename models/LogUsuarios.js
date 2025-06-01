@@ -1,4 +1,4 @@
-const db = require('../config/db');
+const db = require('../src/config/db');
 
 const LogUsuarios = {
   async registrar(usuario_id, acao, detalhes) {
@@ -14,8 +14,16 @@ const LogUsuarios = {
     try {
       await db.query('CALL RegistrarLog(?, ?, ?)', [usuario_id, acao, detalhes]);
     } catch (err) {
-      console.error('Erro ao registrar log (ignorado):', err);
+      console.error('Erro ao registrar log (ignorado):', error);
     }
+  },
+  async buscarTodos(){
+    const[linhas] = await db.query('SELECT * FROM log ORDER BY data_hora DESC');
+    return linhas;
+  },
+  async buscarPorUsuario(usuario_id){
+    const [linhas] = await db.query('SELECT * FROM log WHERE usuario_id = ? ORDER BY data_hora DESC', [usuario_id]);
+    return linhas;
   }
 };
 

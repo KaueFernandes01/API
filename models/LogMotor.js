@@ -1,4 +1,4 @@
-const db = require('../config/db');
+const db = require('../src/config/db');
 
 const Motor = {
   async registrarAcao(usuario_id, velocidade, status) {

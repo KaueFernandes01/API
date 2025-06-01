@@ -1,18 +1,14 @@
+require('dotenv').config({ path: './src/config/env' });
 const express = require('express');
 const app = express();
+const cors = require('cors');
 
-const usuarioRoutes = require('./routes/usuarios');
-const loginRoute = require('./routes/login');
-const motorRoutes = require('./routes/motor');
-const autenticarToken = require('./middlewares/autenticarUsuario');
+const routes = require('./routes/index');
 
+app.use(cors());
 app.use(express.json());
 
-app.use('/login', loginRoute);
-
-
-app.use('/usuarios', autenticarToken, usuarioRoutes);
-app.use('/motor', autenticarToken, motorRoutes)
+app.use(routes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
