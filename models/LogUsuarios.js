@@ -14,7 +14,7 @@ const LogUsuarios = {
     try {
       await db.query('CALL RegistrarLog(?, ?, ?)', [usuario_id, acao, detalhes]);
     } catch (err) {
-      console.error('Erro ao registrar log (ignorado):', error);
+      console.error('Erro ao registrar log (ignorado):', err);
     }
   },
   async buscarTodos(){

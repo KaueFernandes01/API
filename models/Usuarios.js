@@ -11,6 +11,10 @@ const Usuario = {
     const [rows] = await db.query('SELECT * FROM usuarios');
     return rows;
   },
+  async buscarPorId(id){
+    const [rows] = await db.query('SELECT id, nome, login, email FROM usuarios WHERE id = ?', [id]);
+    return rows;
+  },
 
   async atualizar(id, nome, email, login, senha) {
     const [row] = await db.query(

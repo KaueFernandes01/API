@@ -9,7 +9,6 @@ router.post('/', async (req, res) => {
   const { login, senha } = req.body;
 
   try {
-    
     const [resultado] = await db.query('SELECT * FROM usuarios WHERE login = ? AND senha = ?', [login, senha]);
 
     if (resultado.length === 0) {
@@ -18,10 +17,18 @@ router.post('/', async (req, res) => {
 
     const usuario = resultado[0];
 
-    
-    const token = jwt.sign({ id: usuario.id, login: usuario.login }, chaveSecreta, { expiresIn: '1h' });
+    const token = jwt.sign(
+      { id: usuario.id, login: usuario.login },
+      chaveSecreta,
+      { expiresIn: '1h' }
+    );
 
-    res.json({ token });
+    // Aqui vai a correção 👇
+    res.json({
+      token,
+      usuario_id: usuario.id  // Adicionando o ID do usuário na resposta
+    });
+
   } catch (erro) {
     console.error('Erro ao fazer login:', erro);
     res.status(500).json({ erro: 'Erro interno no servidor' });

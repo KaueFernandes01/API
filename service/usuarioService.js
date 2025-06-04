@@ -1,6 +1,7 @@
 const Usuario = require('../models/Usuarios');
 const Log = require('../models/LogUsuarios');
 
+
 async function criarUsuarioService(nome, email, login, senha) {
   const resultado = await Usuario.criar(nome, email, login, senha);
   const novoUsuarioId = resultado[0]?.insertId || resultado.insertId;
@@ -10,6 +11,7 @@ async function criarUsuarioService(nome, email, login, senha) {
   return { id: novoUsuarioId, nome, email, login };
 }
 
+
 async function buscarUsuariosService(usuarioId = 3) {
   const usuarios = await Usuario.buscarTodos();
 
@@ -17,6 +19,24 @@ async function buscarUsuariosService(usuarioId = 3) {
 
   return usuarios;
 }
+
+
+async function buscarUsuarioPorIdService(id, usuarioIdLog = 3) {
+  const usuario = await Usuario.buscarPorId(id);
+
+  if (!usuario) {
+    throw new Error('Usuário não encontrado');
+  }
+
+  await Log.registrarOuIgnorar(
+    usuarioIdLog,
+    'Visualização de usuário específico',
+    `Usuário ${id} visualizado`
+  );
+
+  return usuario;
+}
+
 
 async function atualizarUsuarioService(id, nome, email, login, senha) {
   const atualizado = await Usuario.atualizar(id, nome, email, login, senha);
@@ -30,6 +50,7 @@ async function atualizarUsuarioService(id, nome, email, login, senha) {
   return true;
 }
 
+
 async function deletarUsuarioService(id) {
   const deletado = await Usuario.deletar(id);
 
@@ -42,9 +63,11 @@ async function deletarUsuarioService(id) {
   return true;
 }
 
+
 module.exports = {
   criarUsuarioService,
   buscarUsuariosService,
+  buscarUsuarioPorIdService, 
   atualizarUsuarioService,
   deletarUsuarioService
 };

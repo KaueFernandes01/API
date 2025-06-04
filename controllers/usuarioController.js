@@ -18,6 +18,16 @@ const criarUsuario = async (req, res) => {
     res.status(500).json({ erro: 'Erro interno ao criar usuário' });
   }
 };
+const buscarPorId = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const usuario = await usuarioService.buscarUsuarioPorIdService(id, req.usuario?.id || 3); 
+    res.json(usuario);
+  } catch (error) {
+    res.status(404).json({ erro: error.message });
+  }
+};
 
 const buscarUsuarios = async (req, res) => {
   try {
@@ -75,5 +85,6 @@ module.exports = {
   criarUsuario,
   buscarUsuarios,
   atualizarUsuario,
-  deletarUsuario
+  deletarUsuario,
+  buscarPorId
 };
