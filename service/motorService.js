@@ -15,8 +15,12 @@ async function registrarAcaoMotor(usuario_id, velocidade, status) {
   );
 }
 
-async function listarLogsMotor() {
-  const dados = await Motor.buscarTodos();
+async function listarLogsMotor(usuario_id) {
+  if (!usuario_id) {
+    throw new Error('Usuário não autenticado');
+  }
+
+  const dados = await Motor.buscarLogsPorUsuario(usuario_id); 
   return dados;
 }
 

@@ -9,8 +9,11 @@ const Motor = {
     return resultado;
   },
 
-  async buscarTodos() {
-    const [linhas] = await db.query('SELECT * FROM motor ORDER BY data_hora DESC');
+  async buscarLogsPorUsuario(usuario_id) {
+    const [linhas] = await db.query(
+      'SELECT * FROM motor WHERE usuario_id = ? ORDER BY data_hora DESC',
+      [usuario_id]
+    );
     return linhas;
   }
 };

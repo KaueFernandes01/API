@@ -5,6 +5,6 @@ const autenticar = require('../src/middlewares/autenticarUsuario');
 
 router.post('/', autenticar, MotorController.registrarMotor);
 
-router.get('/', autenticar, MotorController.listarLogsMotor);
+router.get('/logs/:id', autenticar, MotorController.listarLogsMotor);
 
 module.exports = router;
