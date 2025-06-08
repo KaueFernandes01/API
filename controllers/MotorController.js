@@ -1,13 +1,12 @@
 const motorService = require('../service/motorService');
 
-
 const registrarMotor = async (req, res) => {
   try {
     const { velocidade, status } = req.body;
     const usuario_id = req.usuario?.id;
 
-    if (!usuario_id) {
-      return res.status(401).json({ erro: 'Usuário não autenticado' });
+    if (!usuario_id || !velocidade || !status) {
+      return res.status(400).json({ erro: 'Dados inválidos ou usuário não autenticado' });
     }
 
     await motorService.registrarAcaoMotor(usuario_id, velocidade, status);
@@ -19,7 +18,6 @@ const registrarMotor = async (req, res) => {
   }
 };
 
-
 const listarLogsMotor = async (req, res) => {
   try {
     const usuario_id = req.usuario?.id;
@@ -28,7 +26,12 @@ const listarLogsMotor = async (req, res) => {
       return res.status(401).json({ erro: 'Usuário não autenticado' });
     }
 
-    const dados = await motorService.listarLogsMotor(usuario_id); // ✅ Envia usuario_id
+    const dados = await motorService.listarLogsMotor(usuario_id);
+
+    if (!dados || dados.length === 0) {
+      return res.status(200).json([]);
+    }
+
     res.json(dados);
   } catch (error) {
     console.error('Erro ao buscar logs do motor:', error);

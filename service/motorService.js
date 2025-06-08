@@ -7,7 +7,6 @@ async function registrarAcaoMotor(usuario_id, velocidade, status) {
   }
 
   await Motor.registrarAcao(usuario_id, velocidade, status);
-
   await Log.registrarOuIgnorar(
     usuario_id,
     'Controle do motor',
@@ -20,8 +19,12 @@ async function listarLogsMotor(usuario_id) {
     throw new Error('Usuário não autenticado');
   }
 
-  const dados = await Motor.buscarLogsPorUsuario(usuario_id); 
-  return dados;
+  const dados = await Motor.buscarLogsPorUsuario(usuario_id);
+
+  return dados.map(log => ({
+    ...log,
+    data_hora_formatada: log.data_hora_recife || log.data_hora, 
+  }));
 }
 
 module.exports = {
