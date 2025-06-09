@@ -23,7 +23,7 @@ async function listarLogsMotor(usuario_id) {
 
   return dados.map(log => ({
     ...log,
-    data_hora_formatada: log.data_hora_recife || log.data_hora, 
+    data_hora_formatada: log.data_hora_formatada || 'Data não disponível'
   }));
 }
 

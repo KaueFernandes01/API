@@ -10,12 +10,11 @@ const Motor = {
   },
 
   async buscarLogsPorUsuario(usuario_id) {
-    const [linhas] = await db.query(
-      'SELECT id, usuario_id, velocidade, status, DATE_FORMAT(data_hora_recife, "%d/%m/%Y %H:%i") AS data_hora_formatada FROM motor WHERE usuario_id = ? ORDER BY data_hora DESC',
-      [usuario_id]
-    );
-
-    return linhas;
+  const [linhas] = await db.query(
+    'SELECT * FROM motor WHERE usuario_id = ? ORDER BY data_hora DESC',
+    [usuario_id]
+  );
+  return linhas;
   }
 };
 
